@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Devotee Momos | Executive Sales Command Center</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Light Theme Palette */
+            --bg: #f6f8fa;
+            --card-bg: #ffffff;
+            --text: #24292f;
+            --text-muted: #57606a;
+            --accent: #d73a49;
+            --success: #1a7f37;
+            --danger: #cf222e;
+            --border: #d0d7de;
+        }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: var(--card-bg); border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .header h1 { color: var(--accent); margin: 0; font-size: 22px; letter-spacing: 1px; }
+
+        /* KPI Grid */
+        .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .kpi-card { background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border); position: relative; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+        .kpi-card::after { content: ""; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: var(--accent); }
+        .kpi-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .kpi-value { font-size: 26px; font-weight: 600; margin: 5px 0; color: var(--text); }
+        .kpi-trend { font-size: 12px; color: var(--success); font-weight: 500; }
+
+        /* Main Dashboard Layout */
+        .main-grid { display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: auto auto auto; gap: 20px; }
+        .chart-container { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+        .full-width { grid-column: span 2; }
+        h2 { font-size: 16px; font-weight: 600; margin-top: 0; color: var(--text); display: flex; align-items: center; gap: 10px; }
+        h2::before { content: "📊"; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>DEVOTEE MOMOS | PERFORMANCE INSIGHTS</h1>
+        <div style="font-size: 13px; color: var(--text-muted);">Reporting Period: <b style="color: var(--text);">Nov 2025 - Jan 2026</b></div>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card">
+            <div class="kpi-label">Total Revenue</div>
+            <div class="kpi-value">₹5.2L</div>
+            <div class="kpi-trend">↑ 12% vs Prev Month</div>
+        </div>
+        <div class="kpi-card" style="--accent: #1a7f37">
+            <div class="kpi-label">Net Profit</div>
+            <div class="kpi-value">₹8,960</div>
+            <div class="kpi-trend">↑ 4.2% Margin</div>
+        </div>
+        <div class="kpi-card" style="--accent: #cf222e">
+            <div class="kpi-label">Wastage Loss</div>
+            <div class="kpi-value">₹50,190</div>
+            <div class="kpi-trend" style="color:var(--danger)">High Priority Alert</div>
+        </div>
+        <div class="kpi-card" style="--accent: #8250df">
+            <div class="kpi-label">Customer Loyalty</div>
+            <div class="kpi-value">23.6%</div>
+            <div class="kpi-trend" style="color: var(--text-muted)">Repeat Rate</div>
+        </div>
+        <div class="kpi-card" style="--accent: #0969da">
+            <div class="kpi-label">Peak Sales</div>
+            <div class="kpi-value">3,423</div>
+            <div class="kpi-trend" style="color: var(--text-muted)">Units during 7-9 PM</div>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <div class="chart-container full-width">
+            <h2>Financial Performance (Revenue vs. Wastage)</h2>
+            <div id="financialTrend"></div>
+        </div>
+
+        <div class="chart-container">
+            <h2>Product Demand Distribution</h2>
+            <div id="productHeatmap"></div>
+        </div>
+
+        <div class="chart-container">
+            <h2>Weather Impact on Order Volume</h2>
+            <div id="weatherImpact"></div>
+        </div>
+
+        <div class="chart-container">
+            <h2>Waiting Time vs. Satisfaction</h2>
+            <div id="waitEfficiency"></div>
+        </div>
+
+        <div class="chart-container">
+            <h2>Sales by Day Classification</h2>
+            <div id="dayBreakdown"></div>
+        </div>
+    </div>
+
+    <script>
+        const lightLayout = {
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: { color: '#57606a', family: 'Poppins' },
+            margin: { t: 30, b: 40, l: 40, r: 20 },
+            xaxis: { gridcolor: '#eff1f3', zeroline: false, tickcolor: '#d0d7de' },
+            yaxis: { gridcolor: '#eff1f3', zeroline: false, tickcolor: '#d0d7de' }
+        };
+
+        // 1. Financial Trend
+        Plotly.newPlot('financialTrend', [
+            { x: ['W1','W2','W3','W4','W5','W6','W7','W8'], y: [1700, 1800, 1950, 2100, 2300, 2450, 2600, 2400], fill: 'tozeroy', name: 'Raw Material Cost', type: 'scatter', line: {color: '#0969da', width: 3} },
+            { x: ['W1','W2','W3','W4','W5','W6','W7','W8'], y: [750, 1000, 800, 850, 950, 1100, 1200, 900], fill: 'tozeroy', name: 'Wastage Cost', type: 'scatter', line: {color: '#cf222e', width: 3} }
+        ], { ...lightLayout, height: 300 });
+
+        // 2. Product Mix
+        Plotly.newPlot('productHeatmap', [{
+            values: [1806, 2060, 753, 649],
+            labels: ['Veg', 'Chicken', 'Cheese', 'Crispy'],
+            type: 'pie', hole: 0.6,
+            marker: { colors: ['#d73a49', '#1a7f37', '#8250df', '#0969da'] }
+        }], { ...lightLayout, showlegend: true, height: 300 });
+
+        // 3. Weather Impact
+        Plotly.newPlot('weatherImpact', [
+            { x: ['Sunny/Normal', 'Rainy'], y: [102, 87], type: 'bar', marker: {color: ['#d73a49', '#0969da']} }
+        ], { ...lightLayout, height: 300 });
+
+        // 4. Wait Time
+        Plotly.newPlot('waitEfficiency', [
+            { x: [6,7,8,9,10,11,12], y: [95, 90, 85, 70, 60, 50, 45], mode: 'lines+markers', name: 'Satisfaction Score', line: {color: '#1a7f37', width: 3}, marker: {size: 8} }
+        ], { ...lightLayout, xaxis: {title: 'Wait Time (Min)', gridcolor: '#eff1f3'}, height: 300 });
+
+        // 5. Day Breakdown
+        Plotly.newPlot('dayBreakdown', [
+            { labels: ['Weekday', 'Weekend', 'Holiday'], values: [95, 104, 146], type: 'pie', pull: [0, 0, 0.1], marker: { colors: ['#57606a', '#0969da', '#d73a49'] } }
+        ], { ...lightLayout, height: 300 });
+    </script>
+</body>
+</html>
