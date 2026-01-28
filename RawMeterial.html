@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Raw Materials Dashboard + KPIs</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
+        .header { background: #2c3e50; color: white; padding: 15px; text-align: center; border-radius: 10px; margin-bottom: 20px; }
+        
+        /* KPI Styles */
+        .kpi-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
+        .kpi-card { background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-top: 5px solid #3498db; }
+        .kpi-card.alert { border-top-color: #e74c3c; }
+        .kpi-value { font-size: 24px; font-weight: bold; color: #2c3e50; display: block; }
+        .kpi-label { font-size: 14px; color: #7f8c8d; text-transform: uppercase; }
+        .kpi-sub { font-size: 12px; color: #27ae60; }
+        .kpi-sub.down { color: #e74c3c; }
+
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h2 { font-size: 1.1rem; color: #34495e; border-left: 4px solid #3498db; padding-left: 10px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Raw Materials Inventory Dashboard</h1>
+    </div>
+
+    <div class="kpi-container">
+        <div class="kpi-card">
+            <span class="kpi-label">Total Stock Value</span>
+            <span class="kpi-value">₹10,675</span>
+            <span class="kpi-sub">January Closing</span>
+        </div>
+        <div class="kpi-card alert">
+            <span class="kpi-label">Items to Restock</span>
+            <span class="kpi-value">6</span>
+            <span class="kpi-sub down">Critical Alert</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Total Consumption</span>
+            <span class="kpi-value">438</span>
+            <span class="kpi-sub down">▼ 19.6% vs Dec</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Jan Purchases</span>
+            <span class="kpi-value">370</span>
+            <span class="kpi-sub">Units Added</span>
+        </div>
+    </div>
+
+    <div class="grid-container">
+        <div class="card"><h2>Consumption vs Purchases</h2><div id="consumptionChart"></div></div>
+        <div class="card"><h2>Inventory Status Alert</h2><div id="statusChart"></div></div>
+        <div class="card"><h2>Value Distribution</h2><div id="valueChart"></div></div>
+        <div class="card"><h2>Closing Stock Trend</h2><div id="trendChart"></div></div>
+    </div>
+
+    <script>
+        const items = ['Maida', 'Cabbage', 'Onion', 'Chicken', 'Paneer', 'Oil', 'Spices'];
+        Plotly.newPlot('consumptionChart', [
+            { x: items, y: [120, 90, 85, 95, 75, 55, 25], name: 'Dec', type: 'bar' },
+            { x: items, y: [90, 85, 60, 75, 65, 45, 18], name: 'Jan', type: 'bar' }
+        ], { height: 350, margin: {t:20} });
+
+        Plotly.newPlot('statusChart', [
+            { x: items, y: [20, 15, 15, 10, 10, 10, 12], name: 'Current', type: 'bar', marker: {color: '#e74c3c'} },
+            { x: items, y: [30, 25, 20, 20, 20, 15, 10], name: 'Min Required', mode: 'markers', marker: {symbol: 'diamond', color: 'black'} }
+        ], { height: 350, margin: {t:20} });
+
+        Plotly.newPlot('valueChart', [{ values: [800, 375, 300, 1800, 2200, 1600, 3600], labels: items, type: 'pie' }], { height: 350 });
+        
+        Plotly.newPlot('trendChart', [
+            { x: ['Dec', 'Jan'], y: [40, 20], name: 'Maida', mode: 'lines+markers' },
+            { x: ['Dec', 'Jan'], y: [15, 10], name: 'Chicken', mode: 'lines+markers' }
+        ], { height: 350, margin: {t:20} });
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Packaging Dashboard + KPIs</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #eceff1; padding: 20px; }
+        .header { background: #455a64; color: white; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px;}
+        .kpi-row { display: flex; justify-content: space-between; gap: 15px; margin-bottom: 20px; }
+        .kpi-box { background: white; flex: 1; padding: 15px; border-radius: 10px; text-align: center; border-bottom: 4px solid #607d8b; }
+        .kpi-box h3 { margin: 0; font-size: 12px; color: #90a4ae; text-transform: uppercase; }
+        .kpi-box p { margin: 5px 0; font-size: 22px; font-weight: bold; color: #263238; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .chart-card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <div class="header"><h1>Packaging & Consumables Analytics</h1></div>
+
+    <div class="kpi-row">
+        <div class="kpi-box"><h3>Inventory Value</h3><p>₹2,050</p></div>
+        <div class="kpi-box" style="border-bottom-color: #ff5722;"><h3>Restock Alerts</h3><p>2 Items</p></div>
+        <div class="kpi-box"><h3>Total Usage</h3><p>3,650</p></div>
+        <div class="kpi-box"><h3>Usage Growth</h3><p style="color: #f44336;">▼ 15.1%</p></div>
+    </div>
+
+    <div class="grid">
+        <div class="chart-card"><div id="usageBar"></div></div>
+        <div class="chart-card"><div id="stockTrend"></div></div>
+        <div class="chart-card"><div id="costDist"></div></div>
+        <div class="chart-card"><div id="reorderStatus"></div></div>
+    </div>
+
+    <script>
+        const pkgItems = ['Plates', 'Tissues', 'Spoons', 'Napkins', 'Carry Bags'];
+        Plotly.newPlot('usageBar', [
+            { x: pkgItems, y: [900, 900, 850, 900, 750], name: 'Dec Usage', type: 'bar' },
+            { x: pkgItems, y: [800, 750, 700, 750, 650], name: 'Jan Usage', type: 'bar' }
+        ], { title: 'Usage Comparison', barmode: 'group', height: 350 });
+
+        Plotly.newPlot('stockTrend', [
+            { x: ['Dec', 'Jan'], y: [700, 400], name: 'Plates', mode: 'lines+markers' },
+            { x: ['Dec', 'Jan'], y: [400, 250], name: 'Tissues', mode: 'lines+markers' }
+        ], { title: 'Stock Depletion', height: 350 });
+
+        Plotly.newPlot('costDist', [{ values: [800, 250, 250, 150, 600], labels: pkgItems, type: 'pie' }], { title: 'Value Share', height: 350 });
+
+        Plotly.newPlot('reorderStatus', [
+            { x: pkgItems, y: [400, 250, 250, 150, 200], name: 'Stock', type: 'bar' },
+            { x: pkgItems, y: [300, 250, 300, 250, 200], name: 'Limit', mode: 'markers', marker: {symbol: 'x', size: 12, color: 'red'} }
+        ], { title: 'Stock vs Reorder Limit', height: 350 });
+    </script>
+</body>
+</html>
